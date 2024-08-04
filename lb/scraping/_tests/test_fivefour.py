@@ -128,3 +128,100 @@ def test_scrape_main_page(requests_mock_fixture):
         transcript_data[6]["transcript_url"]
         == "http://example.com/episodes/holder-v-humanitarian-law-project/"
     )
+
+
+# New tests to increase coverage
+
+
+def test_scrape_transcript_page_no_description(requests_mock_fixture):
+    no_description_html = """
+    <header class="masthead bg-primary text-white text-center">
+        <em>This is a sample metaphor</em>
+    </header>
+    <div class="col-md-12 col-lg-12 mb-5">
+        <p>00:01:23 Speaker 1: This is a sample transcript entry.</p>
+    </div>
+    """
+    url = "http://example.com/ep1"
+    requests_mock_fixture.get(url, text=no_description_html)
+
+    description, metaphor, transcript = scrape_transcript_page(url)
+
+    assert description == ""
+    assert metaphor == "This is a sample metaphor"
+    assert len(transcript) == 1
+    assert transcript[0]["timestamp"] == "1:23"
+    assert transcript[0]["speaker"] == "Speaker 1"
+    assert transcript[0]["text"] == "This is a sample transcript entry."
+
+
+def test_retry_failed_transcripts_no_existing_file():
+    non_existent_path = "non_existent_path/transcripts.json"
+    retry_failed_transcripts(non_existent_path)
+
+
+def test_retry_failed_transcripts_invalid_json(tmp_path):
+    save_path = tmp_path / "transcripts.json"
+    with open(save_path, "w") as file:
+        file.write("invalid json")
+
+    retry_failed_transcripts(str(save_path))
+
+
+def test_scrape_main_page_no_episodes(requests_mock_fixture):
+    no_episodes_html = """
+    <section class="page-section" id="episodes">
+    <div class="container">
+    <div class="text-center">
+    <h2 class="page-section-heading text-secondary d-inline-block mb-0">EPISODES</h2>
+    </div>
+    </div>
+    </section>
+    """
+    url = "http://example.com"
+    requests_mock_fixture.get(url, text=no_episodes_html)
+
+    transcript_data = scrape_main_page(url)
+
+    assert len(transcript_data) == 0
+
+
+def test_scrape_transcript_page_no_metaphor(requests_mock_fixture):
+    no_metaphor_html = """
+    <header class="masthead bg-primary text-white text-center">
+        <p>This is a sample description</p>
+    </header>
+    <div class="col-md-12 col-lg-12 mb-5">
+        <p>00:01:23 Speaker 1: This is a sample transcript entry.</p>
+    </div>
+    """
+    url = "http://example.com/ep1"
+    requests_mock_fixture.get(url, text=no_metaphor_html)
+
+    description, metaphor, transcript = scrape_transcript_page(url)
+
+    assert description == "This is a sample description"
+    assert metaphor == ""
+    assert len(transcript) == 1
+    assert transcript[0]["timestamp"] == "1:23"
+    assert transcript[0]["speaker"] == "Speaker 1"
+    assert transcript[0]["text"] == "This is a sample transcript entry."
+
+
+def test_scrape_transcript_page_no_transcript(requests_mock_fixture):
+    no_transcript_html = """
+    <header class="masthead bg-primary text-white text-center">
+        <p>This is a sample description</p>
+        <em>This is a sample metaphor</em>
+    </header>
+    <div class="col-md-12 col-lg-12 mb-5">
+    </div>
+    """
+    url = "http://example.com/ep1"
+    requests_mock_fixture.get(url, text=no_transcript_html)
+
+    description, metaphor, transcript = scrape_transcript_page(url)
+
+    assert description == "This is a sample description"
+    assert metaphor == "This is a sample metaphor"
+    assert len(transcript) == 0

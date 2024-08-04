@@ -45,7 +45,8 @@ def create_logger(name: str) -> logging.Logger:
     """Create a `Logger` to be used in different modules
 
     Arguments
-        name: The name of the logger. Will usually be passed in from the module as `__name__`.
+        name: The name of the logger. Will usually be passed in from the module as
+            `__name__`.
 
     Returns:
         The `Logger` object that will be used to create log statements in the terminal.

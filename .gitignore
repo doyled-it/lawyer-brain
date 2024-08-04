@@ -163,3 +163,12 @@ cython_debug/
 
 # VS Code
 .vscode/
+
+# Database files
+**/*.db
+**/*.sqlite3
+**/*.sqlite
+
+
+Unit test data
+test_data/
