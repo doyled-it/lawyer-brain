@@ -10,7 +10,7 @@ from rich.progress import track
 from typing_extensions import Annotated
 
 from lb.rag.db.chroma import (
-    VALID_COLLECTION_NAMES,
+    CollectionNames,
     Speakers,
     add_transcripts_to_db,
     create_ids,
@@ -267,7 +267,8 @@ def db_add(
 def db_search(
     query: Annotated[str, typer.Argument(help="The query string.")],
     collection: Annotated[
-        str, typer.Option("--collection", "-c", help="The collection to query.")
+        CollectionNames,
+        typer.Option("--collection", "-c", help="The collection to query."),
     ] = "FiveFour",
     k: Annotated[
         int,
@@ -285,12 +286,12 @@ def db_search(
         typer.Option("--context", "-C", help="The number of context lines to return."),
     ] = 2,
 ):
-    collection = collection.lower()
-    if collection not in VALID_COLLECTION_NAMES:
+    if collection not in CollectionNames:
         log.error(f"Collection {collection} not found in database.")
         raise ValueError(f"Collection {collection} not found in database.")
-    response = retrieve_five_four(db_loc, query, speaker, k, context)
-    print(response)
+    response, sources = retrieve_five_four(db_loc, query, speaker, k, context)
+    print(f"{response}\n\n")
+    [print(f"[{i + 1}] {source}") for i, source in enumerate(sources)]
 
 
 @db.command("status", help="Print current database location.")

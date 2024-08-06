@@ -20,7 +20,10 @@ load_dotenv()
 # See https://docs.trychroma.com/telemetry#in-chromas-backend-using-environment-variables
 os.environ["ANONYMIZED_TELEMETRY"] = "False"
 
-VALID_COLLECTION_NAMES = ["fivefour", "supremecourt"]
+
+class CollectionNames(str, Enum):
+    fivefour = "FiveFour"
+    supremecourt = "SupremeCourt"
 
 
 class Speakers(str, Enum):
@@ -144,15 +147,15 @@ def add_transcripts_to_db(
         batch_size: batch size for embedding
         progress: show progress bar
     """
-    if collection_name.lower() not in VALID_COLLECTION_NAMES:
+    if collection_name not in CollectionNames:
         message = (
             f"Invalid collection name: {collection_name}. Must be one of "
-            f"{VALID_COLLECTION_NAMES}"
+            f"{CollectionNames}."
         )
         log.error(message)
         raise ValueError(message)
 
-    if collection_name.lower() == "supremecourt":
+    if collection_name == CollectionNames.supremecourt:
         raise NotImplementedError("Supreme Court collection not yet implemented.")
 
     embedding_function = get_embedding_function(embedding_function)
@@ -182,6 +185,7 @@ def add_transcripts_to_db(
             texts[i : i + batch_size],
             metadatas[i : i + batch_size],
             ids[i : i + batch_size],
+            progress=progress,
         )
 
 
@@ -226,21 +230,29 @@ def retrieve_five_four(
     documents = db.similarity_search(query=query, k=k, filter=filter)
 
     # Get the context for each document
-    responses = []
+    doc_responses = []
+    metadata_responses = []
     for doc in documents:
         ids = [
             f'{doc.metadata["episode_id"]}-{doc.metadata["line_id"] + i}'
             for i in range(-context, context)
         ]
-        responses.append(db.get(ids=ids)["documents"])
+        responses = db.get(ids=ids)
+        doc_responses.append(responses["documents"])
+        metadata_responses.append(responses["metadatas"])
 
     final_response = ""
-    for response in responses:
-        combined_lines = "\n\n".join(response)
+    sources = []
+    for i, doc_response in enumerate(doc_responses):
+        metadata_response = metadata_responses[i]
+        combined_lines = "\n\n".join(doc_response)
         if combined_lines not in final_response and "[laughter]" not in combined_lines:
-            final_response += combined_lines + "\n======================\n"
+            final_response += (
+                f"\n\n## {metadata_response[0]['episode_title']}\n" + combined_lines
+            )
+            sources.append(metadata_response[0]["transcript_url"])
 
-    return final_response
+    return final_response, sources
 
 
 def delete_collection(chroma_path: str | Path, collection_name: str) -> None:
