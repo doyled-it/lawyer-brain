@@ -1,6 +1,5 @@
 import json
 import os
-from enum import Enum
 from pathlib import Path
 
 from chromadb import Client
@@ -11,6 +10,7 @@ from langchain_core.embeddings import Embeddings
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain_openai.embeddings import OpenAIEmbeddings
 
+from lb.rag.db.models import CollectionNames
 from lb.utils.log import create_logger
 
 log = create_logger(__name__)
@@ -19,17 +19,6 @@ load_dotenv()
 
 # See https://docs.trychroma.com/telemetry#in-chromas-backend-using-environment-variables
 os.environ["ANONYMIZED_TELEMETRY"] = "False"
-
-
-class CollectionNames(str, Enum):
-    fivefour = "FiveFour"
-    supremecourt = "SupremeCourt"
-
-
-class Speakers(str, Enum):
-    peter = "Peter"
-    rhiannon = "Rhiannon"
-    michael = "Michael"
 
 
 def load_transcripts(file_path: str | Path) -> list[dict[str, str]]:
