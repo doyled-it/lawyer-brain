@@ -13,6 +13,7 @@ points that the hosts of the FiveFour podcast were making in the context provide
 Use specific quotes from the hosts using the Episode Transcript Context in your message.
 
 Episode Transcript Context: {context}
+Chat History: {chat_history}
 User Message: {user_message}
 
 {format_instructions}

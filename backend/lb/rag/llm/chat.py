@@ -2,6 +2,7 @@ from enum import Enum
 from operator import itemgetter
 from typing import Any
 
+from langchain.memory import ConversationSummaryMemory
 from langchain_anthropic.chat_models import ChatAnthropic
 from langchain_core.language_models import BaseChatModel
 from langchain_core.output_parsers import BaseOutputParser
@@ -71,6 +72,9 @@ class LLMChain:
         else:
             raise ValueError(f"Collection {collection} not supported.")
 
+    def _load_memory(self) -> ConversationSummaryMemory:
+        return ConversationSummaryMemory(llm=self.llm)
+
     def _fivefour_route_prompt(self, input: dict[str, Any]) -> dict[str, Any]:
         if input["speaker"] is not None:
             prompt = PromptTemplate.from_template(
@@ -94,6 +98,7 @@ class LLMChain:
             "sources": retriever_output["retriever_output"]["sources"],
             "speaker": retriever_output["speaker"],
             "user_message": retriever_output["user_message"],
+            "chat_history": retriever_output["chat_history"],
         }
 
     def _create_chain(self) -> None:
@@ -103,6 +108,7 @@ class LLMChain:
                 | RunnableLambda(self.retriever.invoke),
                 "speaker": itemgetter("speaker"),
                 "user_message": itemgetter("user_message"),
+                "chat_history": itemgetter("chat_history"),
             }
             | RunnableLambda(self._split_retriever_output)
             | RunnableParallel(
