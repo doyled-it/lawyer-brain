@@ -5,6 +5,7 @@ from langchain_chroma.vectorstores import Chroma
 from langchain_core.prompts import PromptTemplate
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain_openai.chat_models import ChatOpenAI
+from langchain_openai.embeddings import OpenAIEmbeddings
 from rich.progress import track
 
 from lb.utils.log import create_logger
@@ -50,9 +51,11 @@ context_transcripts = add_context(episodes)
 # Step 2: ChromaDB Integration
 
 # Initialize Sentence Transformer model
-embedding_model = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-mpnet-base-v2"
-)
+# embedding_model = HuggingFaceEmbeddings(
+#     model_name="sentence-transformers/all-mpnet-base-v2"
+# )
+embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
+
 # Initialize ChromaDB client
 vectorstore = Chroma(
     collection_name="transcripts",
@@ -76,14 +79,14 @@ for doc in context_transcripts:
 
 texts = []
 metadatas = []
-for doc in track(documents, description="Indexing documents to ChromaDB"):
+for doc in documents:
     texts.append(doc["text"])
     metadatas.append(doc)
+
 # Add the documents to the ChromaDB
 log.info("Adding documents to ChromaDB")
-vectorstore.add_texts(
-    texts=[doc["text"] for doc in documents], metadatas=[doc for doc in documents]
-)
+vectorstore.add_texts(texts=texts, metadatas=metadatas)
+log.info("Indexing complete")
 
 # Step 3: Querying with LangChain
 

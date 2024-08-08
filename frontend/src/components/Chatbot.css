@@ -1,0 +1,90 @@
+.chat-container {
+  max-width: 600px;
+  margin: auto;
+  margin-top: 32px;
+  padding: 16px;
+}
+
+.chat-paper {
+  padding: 16px;
+}
+
+.chat-list {
+  max-height: 400px;
+  overflow: auto;
+}
+
+.chat-bubble {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.chat-bubble.user {
+  justify-content: flex-end;
+}
+
+.chat-bubble.bot {
+  justify-content: flex-start;
+}
+
+.bubble-content {
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  max-width: 75%;
+}
+
+.bubble-content.user {
+  background-color: #1976d2;
+  color: white;
+}
+
+.bubble-content.bot {
+  background-color: #9c27b0;
+  color: white;
+}
+
+.send-button {
+  margin-top: 16px;
+  width: 100%;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.typing-indicator .dot {
+  width: 8px;
+  height: 8px;
+  margin: 0 2px;
+  background-color: white;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: blink 1.4s infinite both;
+}
+
+.typing-indicator .dot:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator .dot:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.typing-indicator .dot:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes blink {
+  0%,
+  80%,
+  100% {
+    opacity: 0.6;
+  }
+  40% {
+    opacity: 1;
+  }
+}
