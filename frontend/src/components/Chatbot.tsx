@@ -70,14 +70,24 @@ const Chatbot: React.FC = () => {
     if (input.trim() === "") return;
 
     const userMessage: Message = { sender: "user", text: input };
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput("");
     setIsTyping(true);
+
+    const chatHistory = updatedMessages.map((msg) => ({
+      sender: msg.sender,
+      message: msg.text,
+    }));
 
     try {
       const response = await axios.post<BackendResponse>(
         "http://localhost:8000/chat",
-        { user_message: input, speaker: selectedSpeaker || null }
+        {
+          user_message: input,
+          speaker: selectedSpeaker || null,
+          chat_history: chatHistory,
+        }
       );
       const botMessage: Message = {
         sender: "bot",
