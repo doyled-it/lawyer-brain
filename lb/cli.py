@@ -10,14 +10,13 @@ from rich.progress import track
 from typing_extensions import Annotated
 
 from lb.rag.db.chroma import (
-    CollectionNames,
-    Speakers,
     add_transcripts_to_db,
     create_ids,
     list_collections,
     load_transcripts,
     retrieve_five_four,
 )
+from lb.rag.db.models import CollectionNames, Speakers
 from lb.scraping.fivefour import (
     retry_failed_transcripts,
     scrape_main_page,
@@ -302,7 +301,8 @@ def db_status():
 @db.command("ls", help="List all collections in the database.")
 def db_ls():
     collections = list_collections(db_loc)
-    print(f"\nFound {len(collections)} collections:")
+    print(f"\nFound {len(collections)} collection(s):")
+    [print(f"\t- [blue]{collection.name}[/blue]") for collection in collections]
 
 
 @db.command("rm", help="Remove a collection from the database.")

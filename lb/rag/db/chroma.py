@@ -158,7 +158,12 @@ def add_transcripts_to_db(
     metadatas = []
     ids = []
     for transcript in transcripts:
-        texts.append(f"{transcript['speaker']}: '{transcript['text']}'")
+        if "[laughter]" in transcript["text"]:
+            continue
+        texts.append(
+            f"({transcript['episode_title']}) {transcript['speaker']}: "
+            f"'{transcript['text']}'"
+        )
         ids.append(transcript["id"])
         metadata = {
             "episode_title": transcript["episode_title"],
@@ -251,7 +256,7 @@ def delete_collection(chroma_path: str | Path, collection_name: str) -> None:
         chroma_path: path to ChromaDB
         collection_name: name of collection
     """
-    db = Chroma(persist_directory=chroma_path)
+    db = Chroma(persist_directory=str(chroma_path))
     db.delete_collection(collection_name)
     log.debug(f"Collection {collection_name} deleted from ChromaDB.")
 
@@ -262,6 +267,6 @@ def list_collections(chroma_path: str | Path) -> list[str]:
     Arguments:
         chroma_path: path to ChromaDB
     """
-    db = Client(settings=Settings(persist_directory=chroma_path))
+    db = Client(settings=Settings(persist_directory=str(chroma_path), is_persistent=True))
     collections = db.list_collections()
     return collections
