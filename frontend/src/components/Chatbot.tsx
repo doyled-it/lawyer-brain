@@ -84,7 +84,7 @@ const Chatbot: React.FC = () => {
         text: response.data.message,
         sources: response.data.sources,
       };
-      setMessages((prevMessages) => [...prevMessages, userMessage, botMessage]);
+      setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
       console.error("Error sending message", error);
     } finally {
@@ -102,6 +102,7 @@ const Chatbot: React.FC = () => {
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      e.preventDefault(); // Prevent default behavior
       sendMessage();
     }
   };
