@@ -1,8 +1,8 @@
 import React, {
   useState,
-  ChangeEvent,
   useEffect,
   useRef,
+  ChangeEvent,
   KeyboardEvent,
 } from "react";
 import axios from "axios";
@@ -38,13 +38,34 @@ const Chatbot: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [selectedSpeaker, setSelectedSpeaker] = useState<Speaker | string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [initialLoadComplete, setInitialLoadComplete] =
+    useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Load chat history from localStorage on mount
+  useEffect(() => {
+    const savedMessages = localStorage.getItem("chatMessages");
+    if (savedMessages) {
+      const parsedMessages: Message[] = JSON.parse(savedMessages);
+      console.log("Loaded messages from localStorage:", parsedMessages);
+      setMessages(parsedMessages);
+    }
+    setInitialLoadComplete(true);
+  }, []);
+
+  // Save chat history to localStorage whenever messages change after the initial load
+  useEffect(() => {
+    if (initialLoadComplete) {
+      console.log("Saving messages to localStorage:", messages);
+      localStorage.setItem("chatMessages", JSON.stringify(messages));
+    }
+  }, [messages, initialLoadComplete]);
 
   const sendMessage = async () => {
     if (input.trim() === "") return;
 
     const userMessage: Message = { sender: "user", text: input };
-    setMessages([...messages, userMessage]);
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInput("");
     setIsTyping(true);
 
@@ -57,7 +78,11 @@ const Chatbot: React.FC = () => {
         sender: "bot",
         text: response.data.message,
       };
-      setMessages((prevMessages) => [...prevMessages, userMessage, botMessage]);
+      setMessages((prevMessages) => {
+        // Remove the last user message to avoid duplication and add both user and bot messages
+        const updatedMessages = prevMessages.slice(0, -1);
+        return [...updatedMessages, userMessage, botMessage];
+      });
     } catch (error) {
       console.error("Error sending message", error);
     } finally {
@@ -83,6 +108,11 @@ const Chatbot: React.FC = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  const clearChatHistory = () => {
+    setMessages([]);
+    localStorage.removeItem("chatMessages");
   };
 
   useEffect(scrollToBottom, [messages]);
@@ -149,8 +179,18 @@ const Chatbot: React.FC = () => {
           color="primary"
           onClick={sendMessage}
           className="send-button"
+          sx={{ mt: 2 }}
         >
           Send
+        </Button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={clearChatHistory}
+          className="clear-button"
+          sx={{ mt: 2 }}
+        >
+          Clear Chat History
         </Button>
       </Paper>
     </Box>
