@@ -16,4 +16,10 @@ class FiveFourModelOutput(BaseModel):
             "tell you?"
         ),
     )
-    message: str = Field(..., description="The message to be displayed to the user")
+    message: str = Field(
+        ...,
+        description=(
+            "The message to be displayed to the user. "
+            "Format the text as markdown text if it makes the message more readable."
+        ),
+    )

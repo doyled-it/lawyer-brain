@@ -17,10 +17,12 @@
 .chat-bubble {
   display: flex;
   margin-bottom: 8px;
+  align-items: flex-start;
 }
 
 .chat-bubble.user {
   justify-content: flex-end;
+  align-items: flex-end;
 }
 
 .chat-bubble.bot {
@@ -28,10 +30,11 @@
 }
 
 .bubble-content {
-  padding: 16px;
+  padding: 0px 8px;
   border-radius: 8px;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
   max-width: 75%;
+  word-wrap: break-word;
 }
 
 .bubble-content.user {
@@ -49,8 +52,14 @@
   width: 100%;
 }
 
+.clear-button {
+  margin-top: 8px;
+  width: 100%;
+}
+
 /* Typing Indicator */
 .typing-indicator {
+  padding: 16px;
   display: flex;
   justify-content: flex-start;
   align-items: center;

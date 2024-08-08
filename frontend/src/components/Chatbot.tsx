@@ -21,6 +21,8 @@ import {
   Paper,
 } from "@mui/material";
 import { Speaker } from "../types/Speaker";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import "./Chatbot.css";
 
 interface Message {
@@ -78,11 +80,7 @@ const Chatbot: React.FC = () => {
         sender: "bot",
         text: response.data.message,
       };
-      setMessages((prevMessages) => {
-        // Remove the last user message to avoid duplication and add both user and bot messages
-        const updatedMessages = prevMessages.slice(0, -1);
-        return [...updatedMessages, userMessage, botMessage];
-      });
+      setMessages((prevMessages) => [...prevMessages, userMessage, botMessage]);
     } catch (error) {
       console.error("Error sending message", error);
     } finally {
@@ -132,7 +130,11 @@ const Chatbot: React.FC = () => {
               }}
             >
               <Box className={`bubble-content ${msg.sender}`}>
-                <Typography variant="body1">{msg.text}</Typography>
+                <Typography variant="body1">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {msg.text}
+                  </ReactMarkdown>
+                </Typography>
               </Box>
             </ListItem>
           ))}
