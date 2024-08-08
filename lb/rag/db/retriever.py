@@ -43,7 +43,7 @@ class FiveFourRetriever:
             The LangChain embedding function
         """
         if embedding_function.lower() == "openai":
-            embedding_function = OpenAIEmbeddings(model="text-embedding-ada-002")
+            embedding_function = OpenAIEmbeddings(model="text-embedding-3-small")
         else:
             try:
                 embedding_function = HuggingFaceEmbeddings(

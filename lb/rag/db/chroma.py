@@ -102,7 +102,7 @@ def create_context(
 
 def get_embedding_function(embedding_function: str, progress: bool = False) -> Embeddings:
     if embedding_function.lower() == "openai":
-        embedding_function = OpenAIEmbeddings(model="text-embedding-ada-002")
+        embedding_function = OpenAIEmbeddings(model="text-embedding-3-small")
     else:
         try:
             embedding_function = HuggingFaceEmbeddings(
