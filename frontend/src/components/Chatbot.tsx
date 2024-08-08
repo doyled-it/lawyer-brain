@@ -135,16 +135,16 @@ const Chatbot: React.FC = () => {
   return (
     <Box
       className="chat-container"
-      sx={{ display: "flex", flexDirection: "column", height: "100vh" }}
+      sx={{ display: "flex", flexDirection: "column", height: "100%" }}
     >
       <Paper
         elevation={3}
         className="chat-paper"
         sx={{
-          flex: 1,
           display: "flex",
           flexDirection: "column",
-          marginBottom: 2,
+          flex: 1,
+          overflow: "hidden", // Ensure the overflow is hidden to prevent content from leaking out
         }}
       >
         <List className="chat-list" sx={{ flex: 1, overflowY: "auto" }}>
@@ -219,8 +219,6 @@ const Chatbot: React.FC = () => {
         sx={{
           padding: 2,
           borderTop: "1px solid #ddd",
-          position: "sticky",
-          bottom: 0,
           backgroundColor: "background.default",
           zIndex: 1,
           display: "flex",
@@ -247,7 +245,7 @@ const Chatbot: React.FC = () => {
           <br />
           History
         </Button>
-        <FormControl sx={{ flex: 1, height: "100%" }}>
+        <FormControl sx={{ flex: 2, height: "100%" }}>
           <InputLabel id="speaker-select-label">Filter by Speaker</InputLabel>
           <Select
             labelId="speaker-select-label"
@@ -284,7 +282,7 @@ const Chatbot: React.FC = () => {
             color="primary"
             onClick={sendMessage}
             className="send-button"
-            sx={{ flex: 0, paddingBottom: "10px", height: "100%" }}
+            sx={{ flex: 0, height: "100%" }}
           >
             <SendIcon />
           </IconButton>
