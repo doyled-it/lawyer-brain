@@ -9,7 +9,7 @@ import axios from "axios";
 import {
   Box,
   TextField,
-  Button,
+  IconButton,
   List,
   ListItem,
   Typography,
@@ -20,10 +20,12 @@ import {
   SelectChangeEvent,
   Paper,
   Tooltip,
+  Button,
 } from "@mui/material";
 import { Speaker } from "../types/Speaker";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import SendIcon from "@mui/icons-material/Send";
 import "./Chatbot.css";
 
 interface Message {
@@ -131,9 +133,21 @@ const Chatbot: React.FC = () => {
   useEffect(scrollToBottom, [messages]);
 
   return (
-    <Box className="chat-container">
-      <Paper elevation={3} className="chat-paper">
-        <List className="chat-list">
+    <Box
+      className="chat-container"
+      sx={{ display: "flex", flexDirection: "column", height: "100vh" }}
+    >
+      <Paper
+        elevation={3}
+        className="chat-paper"
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          marginBottom: 2,
+        }}
+      >
+        <List className="chat-list" sx={{ flex: 1, overflowY: "auto" }}>
           {messages.map((msg, index) => (
             <Box key={index} sx={{ marginBottom: "16px" }}>
               <ListItem
@@ -200,13 +214,47 @@ const Chatbot: React.FC = () => {
           )}
           <div ref={messagesEndRef} />
         </List>
-        <FormControl fullWidth sx={{ mt: 2 }}>
-          <InputLabel id="speaker-select-label">Select Speaker</InputLabel>
+      </Paper>
+      <Box
+        sx={{
+          padding: 2,
+          borderTop: "1px solid #ddd",
+          position: "sticky",
+          bottom: 0,
+          backgroundColor: "background.default",
+          zIndex: 1,
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={clearChatHistory}
+          className="clear-button"
+          size="small"
+          sx={{
+            whiteSpace: "nowrap",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            flex: 1,
+            height: "100%", // Ensure it matches the height of other elements
+          }}
+        >
+          Clear Chat
+          <br />
+          History
+        </Button>
+        <FormControl sx={{ flex: 1, height: "100%" }}>
+          <InputLabel id="speaker-select-label">Filter by Speaker</InputLabel>
           <Select
             labelId="speaker-select-label"
             value={selectedSpeaker}
             onChange={handleSpeakerChange}
-            label="Select Speaker"
+            label="Filter by Speaker"
+            sx={{ height: "100%" }}
           >
             <MenuItem value="">None</MenuItem>
             {Object.values(Speaker).map((speaker) => (
@@ -216,33 +264,32 @@ const Chatbot: React.FC = () => {
             ))}
           </Select>
         </FormControl>
-        <TextField
-          fullWidth
-          value={input}
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
-          placeholder="Type your message..."
-          sx={{ mt: 2 }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={sendMessage}
-          className="send-button"
-          sx={{ mt: 2 }}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flex: 4,
+            height: "100%",
+          }}
         >
-          Send
-        </Button>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={clearChatHistory}
-          className="clear-button"
-          sx={{ mt: 2 }}
-        >
-          Clear Chat History
-        </Button>
-      </Paper>
+          <TextField
+            fullWidth
+            value={input}
+            onChange={handleInputChange}
+            onKeyPress={handleKeyPress}
+            placeholder="Type your message..."
+            sx={{ flex: 1, height: "100%" }}
+          />
+          <IconButton
+            color="primary"
+            onClick={sendMessage}
+            className="send-button"
+            sx={{ flex: 0, paddingBottom: "10px", height: "100%" }}
+          >
+            <SendIcon />
+          </IconButton>
+        </Box>
+      </Box>
     </Box>
   );
 };
