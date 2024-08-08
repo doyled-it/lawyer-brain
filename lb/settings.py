@@ -11,9 +11,9 @@ class Settings(BaseSettings):
 
     dir: Path = Path.home().expanduser() / ".lb"
     chroma_dir: Path = dir / "chroma"
-    chroma_k: int = 10
-    chroma_context: int = 10
-    chroma_embedding_function: str = "sentence-transformers/all-MiniLM-L6-v2"
+    chroma_k: int = 20
+    chroma_context: int = 5
+    chroma_embedding_function: str = "OpenAI"
     llm_model: str = "gpt-4o-mini"
     llm_model_family: ModelFamilies | str = ModelFamilies.openai
     llm_collection: CollectionNames | str = CollectionNames.fivefour

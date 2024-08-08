@@ -12,6 +12,7 @@ from typing_extensions import Annotated
 from lb.rag.db.chroma import (
     add_transcripts_to_db,
     create_ids,
+    delete_collection,
     list_collections,
     load_transcripts,
     retrieve_five_four,
@@ -310,8 +311,9 @@ def db_rm(
     collection_name: Annotated[
         str, typer.Argument(help="The name of the collection to remove.")
     ]
-):
-    pass
+) -> None:
+    delete_collection(db_loc, collection_name)
+    print(f"Collection {collection_name} removed from database.")
 
 
 cli.add_typer(db, name="db")

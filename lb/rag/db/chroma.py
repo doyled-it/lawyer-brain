@@ -221,7 +221,7 @@ def retrieve_five_four(
         filter = None
 
     # Get the most similar documents to the query
-    documents = db.similarity_search(query=query, k=k, filter=filter)
+    documents = db.max_marginal_relevance_search(query=query, k=k, filter=filter)
 
     # Get the context for each document
     doc_responses = []
@@ -256,8 +256,8 @@ def delete_collection(chroma_path: str | Path, collection_name: str) -> None:
         chroma_path: path to ChromaDB
         collection_name: name of collection
     """
-    db = Chroma(persist_directory=str(chroma_path))
-    db.delete_collection(collection_name)
+    db = Chroma(collection_name=collection_name, persist_directory=str(chroma_path))
+    db.delete_collection()
     log.debug(f"Collection {collection_name} deleted from ChromaDB.")
 
 
