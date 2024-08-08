@@ -19,6 +19,7 @@ import {
   MenuItem,
   SelectChangeEvent,
   Paper,
+  Tooltip,
 } from "@mui/material";
 import { Speaker } from "../types/Speaker";
 import ReactMarkdown from "react-markdown";
@@ -28,10 +29,12 @@ import "./Chatbot.css";
 interface Message {
   sender: "user" | "bot";
   text: string;
+  sources?: string[];
 }
 
 interface BackendResponse {
   message: string;
+  sources?: string[];
   // Add other keys as needed
 }
 
@@ -79,6 +82,7 @@ const Chatbot: React.FC = () => {
       const botMessage: Message = {
         sender: "bot",
         text: response.data.message,
+        sources: response.data.sources,
       };
       setMessages((prevMessages) => [...prevMessages, userMessage, botMessage]);
     } catch (error) {
@@ -120,23 +124,56 @@ const Chatbot: React.FC = () => {
       <Paper elevation={3} className="chat-paper">
         <List className="chat-list">
           {messages.map((msg, index) => (
-            <ListItem
-              key={index}
-              className={`chat-bubble ${msg.sender}`}
-              sx={{
-                display: "flex",
-                justifyContent:
-                  msg.sender === "user" ? "flex-end" : "flex-start",
-              }}
-            >
-              <Box className={`bubble-content ${msg.sender}`}>
-                <Typography variant="body1">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {msg.text}
-                  </ReactMarkdown>
-                </Typography>
-              </Box>
-            </ListItem>
+            <Box key={index} sx={{ marginBottom: "16px" }}>
+              <ListItem
+                className={`chat-bubble ${msg.sender}`}
+                sx={{
+                  display: "flex",
+                  justifyContent:
+                    msg.sender === "user" ? "flex-end" : "flex-start",
+                }}
+              >
+                <Box className={`bubble-content ${msg.sender}`}>
+                  <Typography variant="body1">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {msg.text}
+                    </ReactMarkdown>
+                  </Typography>
+                </Box>
+              </ListItem>
+              {msg.sources && msg.sources.length > 0 && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    gap: "4px",
+                    marginTop: "-12px",
+                    marginLeft: "16px",
+                  }}
+                >
+                  {Array.from(new Set(msg.sources)).map((source, i) => (
+                    <Tooltip key={i} title={source}>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        size="small"
+                        sx={{
+                          minWidth: "24px",
+                          padding: "4px",
+                          borderRadius: "50%",
+                          width: "24px",
+                          height: "24px",
+                          minHeight: "24px",
+                        }}
+                        onClick={() => window.open(source, "_blank")}
+                      >
+                        {i + 1}
+                      </Button>
+                    </Tooltip>
+                  ))}
+                </Box>
+              )}
+            </Box>
           ))}
           {isTyping && (
             <ListItem
