@@ -170,5 +170,8 @@ cython_debug/
 **/*.sqlite
 
 
-Unit test data
+# Unit test data
 test_data/
+
+# Chroma
+chroma

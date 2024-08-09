@@ -21,7 +21,10 @@ class Settings(BaseSettings):
     environment: Environment | str = Environment.development
     prod_url: str = ""
     origin: str = ""
-    chroma_dir: Path = dir / "chroma"
+    chroma_path: str | Path = "localhost"
+    # chroma_path: str | Path = dir / "chroma"
+    chroma_docker: bool = True
+    chroma_port: int = 9000
     chroma_k: int = 20
     chroma_context: int = 5
     chroma_embedding_function: str = "OpenAI"
@@ -32,7 +35,8 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def post_init(self):
         self.dir.mkdir(parents=True, exist_ok=True)
-        self.chroma_dir.mkdir(parents=True, exist_ok=True)
+        if not self.chroma_docker:
+            self.chroma_path.mkdir(parents=True, exist_ok=True)
         if self.environment == Environment.production:
             self.origin = self.prod_url
         elif self.environment == Environment.staging:

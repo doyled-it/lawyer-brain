@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+import chromadb
 from langchain_chroma.vectorstores import Chroma
 from langchain_core.embeddings import Embeddings
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
@@ -18,11 +19,15 @@ class FiveFourRetriever:
     def __init__(
         self,
         chroma_path: str | Path,
+        chroma_docker: bool = False,
+        chroma_port: int = 9000,
         k: int = 5,
         context: int = 5,
-        embedding_function: str = "sentence-transformers/all-MiniLM-L6-v2",
+        embedding_function: str = "OpenAI",
     ) -> None:
         self.chroma_path = chroma_path
+        self.chroma_docker = chroma_docker
+        self.chroma_port = chroma_port
         self.k = k
         self.context = context
         self._embedding_name = embedding_function
@@ -65,11 +70,19 @@ class FiveFourRetriever:
             The ChromaDB client
         """
         # Create a ChromaDB client
-        return Chroma(
-            collection_name=CollectionNames.fivefour,
-            persist_directory=str(self.chroma_path),
-            embedding_function=self.embedding_function,
-        )
+        if not self.chroma_docker:
+            return Chroma(
+                collection_name=CollectionNames.fivefour,
+                persist_directory=str(self.chroma_path),
+                embedding_function=self.embedding_function,
+            )
+        else:
+            client = chromadb.HttpClient(self.chroma_path, self.chroma_port)
+            return Chroma(
+                collection_name=CollectionNames.fivefour,
+                client=client,
+                embedding_function=self.embedding_function,
+            )
 
     def invoke(
         self, user_message: str, speaker: Speakers | None = None

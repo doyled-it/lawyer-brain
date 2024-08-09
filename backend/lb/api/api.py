@@ -10,7 +10,9 @@ app = FastAPI()
 settings = Settings()
 
 retriever = FiveFourRetriever(
-    settings.chroma_dir,
+    settings.chroma_path,
+    settings.chroma_docker,
+    settings.chroma_port,
     k=settings.chroma_k,
     context=settings.chroma_context,
     embedding_function=settings.chroma_embedding_function,
