@@ -11,6 +11,7 @@ from lb.rag.llm.chat import ModelFamilies
 class Environment(str, Enum):
     development = "development"
     production = "production"
+    staging = "staging"
 
 
 class Settings(BaseSettings):
@@ -34,5 +35,7 @@ class Settings(BaseSettings):
         self.chroma_dir.mkdir(parents=True, exist_ok=True)
         if self.environment == Environment.production:
             self.origin = self.prod_url
+        elif self.environment == Environment.staging:
+            self.origin = "*"
         elif self.environment == Environment.development:
             self.origin = "http://localhost:3000"
