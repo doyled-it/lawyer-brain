@@ -1,9 +1,0 @@
-build:
-  languages:
-    - python
-  path: backend # Point to your backend folder
-  buildpacks:
-    - heroku/python
-
-run:
-  web: cd backend && uvicorn lb.api.api:app --host 0.0.0.0 --port $PORT
