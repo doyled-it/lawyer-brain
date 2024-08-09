@@ -12,19 +12,20 @@ class Environment(str, Enum):
     development = "development"
     production = "production"
     staging = "staging"
+    docker = "docker"
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="LB_")
 
     dir: Path = Path.home().expanduser() / ".lb"
-    environment: Environment | str = Environment.development
+    environment: Environment | str = Environment.staging
     prod_url: str = ""
     origin: str = ""
     chroma_path: str | Path = "localhost"
     # chroma_path: str | Path = dir / "chroma"
     chroma_docker: bool = True
-    chroma_port: int = 9000
+    chroma_port: int = 8000
     chroma_k: int = 20
     chroma_context: int = 5
     chroma_embedding_function: str = "OpenAI"
@@ -39,7 +40,10 @@ class Settings(BaseSettings):
             self.chroma_path.mkdir(parents=True, exist_ok=True)
         if self.environment == Environment.production:
             self.origin = self.prod_url
-        elif self.environment == Environment.staging:
+        elif (
+            self.environment == Environment.staging
+            or self.environment == Environment.docker
+        ):
             self.origin = "*"
         elif self.environment == Environment.development:
             self.origin = "http://localhost:3000"

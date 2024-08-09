@@ -4,7 +4,6 @@ from pathlib import Path
 import chromadb
 from langchain_chroma.vectorstores import Chroma
 from langchain_core.embeddings import Embeddings
-from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain_openai.embeddings import OpenAIEmbeddings
 
 from lb.rag.db.models import CollectionNames, Speakers
@@ -50,6 +49,16 @@ class FiveFourRetriever:
         if embedding_function.lower() == "openai":
             embedding_function = OpenAIEmbeddings(model="text-embedding-3-small")
         else:
+            try:
+                from langchain_huggingface.embeddings import HuggingFaceEmbeddings
+            except ImportError:
+                message = (
+                    "Hugging Face embeddings are not installed. "
+                    "Please install with `pip install 'lawyerbrain[huggingface]' "
+                    "package."
+                )
+                log.error(message)
+                raise ImportError(message)
             try:
                 embedding_function = HuggingFaceEmbeddings(
                     model_name=embedding_function, show_progress=progress

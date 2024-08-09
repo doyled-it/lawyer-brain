@@ -7,7 +7,6 @@ from chromadb.config import Settings
 from dotenv import load_dotenv
 from langchain_chroma.vectorstores import Chroma
 from langchain_core.embeddings import Embeddings
-from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain_openai.embeddings import OpenAIEmbeddings
 
 from lb.rag.db.models import CollectionNames
@@ -104,6 +103,15 @@ def get_embedding_function(embedding_function: str, progress: bool = False) -> E
     if embedding_function.lower() == "openai":
         embedding_function = OpenAIEmbeddings(model="text-embedding-3-small")
     else:
+        try:
+            from langchain_huggingface.embeddings import HuggingFaceEmbeddings
+        except ImportError:
+            message = (
+                "HuggingFaceEmbeddings not available. Please install extras with `pip "
+                "install 'lawyer-brain[huggingface]'`."
+            )
+            log.error(message)
+            raise ImportError(message)
         try:
             embedding_function = HuggingFaceEmbeddings(
                 model_name=embedding_function, show_progress=progress

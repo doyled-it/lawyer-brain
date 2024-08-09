@@ -5,8 +5,8 @@ networks:
     driver: bridge
 
 services:
-  server:
-    image: server
+  db:
+    image: lbdb
     build:
       context: .
       dockerfile: lbdb.Dockerfile
@@ -37,6 +37,44 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    networks:
+      - net
+
+  backend:
+    image: lb-backend
+    build:
+      context: backend
+      dockerfile: backend.Dockerfile
+    environment:
+      - PORT=8000
+      - LB_ENVIRONMENT=docker
+      - LB_CHROMA_PATH=db
+      - LB_CHROMA_DOCKER=True
+      - LB_CHROMA_PORT=9000
+      - LB_CHROMA_K=20
+      - LB_CHROMA_CONTEXT=5
+      - LB_CHROMA_EMBEDDING_FUNCTION=OpenAI
+      - LB_LLM_MODEL=gpt-4o-mini
+      - LB_LLM_MODEL_FAMILY=OpenAI
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    restart: unless-stopped
+    # command: >
+    #   /bin/sh -c "trap : TERM INT; sleep infinity & wait"
+    ports:
+      - "8000:8000"
+    networks:
+      - net
+
+  frontend:
+    image: lb-frontend
+    build:
+      context: frontend
+      dockerfile: frontend.Dockerfile
+    environment:
+      - REACT_APP_BACKEND_URL="http://backend/chat"
+    restart: unless-stopped
+    ports:
+      - "3000:80"
     networks:
       - net
 

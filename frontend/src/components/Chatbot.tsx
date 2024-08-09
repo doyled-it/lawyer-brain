@@ -83,8 +83,10 @@ const Chatbot: React.FC = () => {
     }));
 
     try {
+      console.log("REACT_APP_BACKEND_URL", process.env.REACT_APP_BACKEND_URL);
       const response = await axios.post<BackendResponse>(
-        "http://localhost:8000/chat",
+        // Load the backend URL from an environment variable if it is set
+        process.env.REACT_APP_BACKEND_URL || "http://localhost:8000/chat",
         {
           user_message: input,
           speaker: selectedSpeaker || null,
