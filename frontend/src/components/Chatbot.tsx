@@ -237,7 +237,8 @@ const Chatbot: React.FC = () => {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            flex: 1,
+            flex: 0.5,
+            minWidth: "100px",
             height: "100%", // Ensure it matches the height of other elements
           }}
         >
@@ -245,7 +246,7 @@ const Chatbot: React.FC = () => {
           <br />
           History
         </Button>
-        <FormControl sx={{ flex: 2, height: "100%" }}>
+        <FormControl sx={{ flex: 1, height: "100%" }}>
           <InputLabel id="speaker-select-label">Filter by Speaker</InputLabel>
           <Select
             labelId="speaker-select-label"
