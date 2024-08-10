@@ -86,7 +86,10 @@ class FiveFourRetriever:
                 embedding_function=self.embedding_function,
             )
         else:
-            client = chromadb.HttpClient(self.chroma_path, self.chroma_port)
+            if self.chroma_port is None:
+                client = chromadb.HttpClient(self.chroma_path)
+            else:
+                client = chromadb.HttpClient(self.chroma_path, self.chroma_port)
             return Chroma(
                 collection_name=CollectionNames.fivefour,
                 client=client,
