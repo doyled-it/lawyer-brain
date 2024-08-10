@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     chroma_path: str | Path = "localhost"
     # chroma_path: str | Path = dir / "chroma"
     chroma_docker: bool = True
-    chroma_port: int = 8000
+    chroma_port: int | None = None
     chroma_k: int = 20
     chroma_context: int = 5
     chroma_embedding_function: str = "OpenAI"
