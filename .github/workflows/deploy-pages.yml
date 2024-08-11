@@ -28,8 +28,7 @@ jobs:
         working-directory: ./frontend
 
       - name: Copy CNAME file
-        run: cp CNAME build/CNAME
-        working-directory: ./frontend
+        run: cp CNAME frontend/build/CNAME
 
       - name: No Jekyll
         run: touch build/.nojekyll
