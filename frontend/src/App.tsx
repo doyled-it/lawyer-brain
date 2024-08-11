@@ -87,7 +87,7 @@ const App: React.FC = () => {
             display: "flex",
             flexDirection: "column",
             flex: 1,
-            minWidth: "70%",
+            minWidth: "25%",
           }}
         >
           <Routes>
