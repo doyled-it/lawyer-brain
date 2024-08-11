@@ -137,7 +137,12 @@ const Chatbot: React.FC = () => {
   return (
     <Box
       className="chat-container"
-      sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        minWidth: "100%",
+      }}
     >
       <Paper
         elevation={3}
