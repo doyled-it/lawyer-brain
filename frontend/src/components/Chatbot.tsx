@@ -153,75 +153,99 @@ const Chatbot: React.FC = () => {
           mb: 2, // Add margin at the bottom to create space for the sticky bar
         }}
       >
-        <List
-          sx={{
-            flex: 1,
-            overflowY: "auto",
-            padding: 2,
-          }}
-        >
-          {messages.map((msg, index) => (
-            <Box key={index} sx={{ marginBottom: "16px" }}>
-              <ListItem
-                sx={{
-                  display: "flex",
-                  justifyContent:
-                    msg.sender === "user" ? "flex-end" : "flex-start",
-                }}
-              >
-                <Box className={`bubble-content ${msg.sender}`}>
-                  <Typography variant="body1">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {msg.text}
-                    </ReactMarkdown>
-                  </Typography>
-                </Box>
-              </ListItem>
-              {msg.sources && msg.sources.length > 0 && (
-                <Box
+        {messages.length === 0 ? (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              textAlign: "center",
+              p: 3,
+            }}
+          >
+            <Box
+              component="img"
+              src={`${process.env.PUBLIC_URL}/lawyer-brain-good-logo.png`}
+              alt="Lawyer Brain Logo"
+              sx={{ width: 150, height: 150, mb: 2 }}
+            />
+            <Typography variant="h5" component="div" gutterBottom>
+              Ask the 5-4 Lawyer Brain about the Supreme Court
+            </Typography>
+          </Box>
+        ) : (
+          <List
+            sx={{
+              flex: 1,
+              overflowY: "auto",
+              padding: 2,
+            }}
+          >
+            {messages.map((msg, index) => (
+              <Box key={index} sx={{ marginBottom: "16px" }}>
+                <ListItem
                   sx={{
                     display: "flex",
-                    justifyContent: "flex-start",
-                    gap: "4px",
-                    marginTop: "-12px",
-                    marginLeft: "16px",
+                    justifyContent:
+                      msg.sender === "user" ? "flex-end" : "flex-start",
                   }}
                 >
-                  {Array.from(new Set(msg.sources)).map((source, i) => (
-                    <Tooltip key={i} title={source}>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        size="small"
-                        sx={{
-                          minWidth: "24px",
-                          padding: "4px",
-                          borderRadius: "50%",
-                          width: "24px",
-                          height: "24px",
-                          minHeight: "24px",
-                        }}
-                        onClick={() => window.open(source, "_blank")}
-                      >
-                        {i + 1}
-                      </Button>
-                    </Tooltip>
-                  ))}
-                </Box>
-              )}
-            </Box>
-          ))}
-          {isTyping && (
-            <ListItem sx={{ display: "flex", justifyContent: "flex-start" }}>
-              <Box className="bubble-content bot typing-indicator">
-                <div className="dot"></div>
-                <div className="dot"></div>
-                <div className="dot"></div>
+                  <Box className={`bubble-content ${msg.sender}`}>
+                    <Typography variant="body1">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {msg.text}
+                      </ReactMarkdown>
+                    </Typography>
+                  </Box>
+                </ListItem>
+                {msg.sources && msg.sources.length > 0 && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      gap: "4px",
+                      marginTop: "-12px",
+                      marginLeft: "16px",
+                    }}
+                  >
+                    {Array.from(new Set(msg.sources)).map((source, i) => (
+                      <Tooltip key={i} title={source}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          size="small"
+                          sx={{
+                            minWidth: "24px",
+                            padding: "4px",
+                            borderRadius: "50%",
+                            width: "24px",
+                            height: "24px",
+                            minHeight: "24px",
+                          }}
+                          onClick={() => window.open(source, "_blank")}
+                        >
+                          {i + 1}
+                        </Button>
+                      </Tooltip>
+                    ))}
+                  </Box>
+                )}
               </Box>
-            </ListItem>
-          )}
-          <div ref={messagesEndRef} />
-        </List>
+            ))}
+            {isTyping && (
+              <ListItem sx={{ display: "flex", justifyContent: "flex-start" }}>
+                <Box className="bubble-content bot typing-indicator">
+                  <div className="dot"></div>
+                  <div className="dot"></div>
+                  <div className="dot"></div>
+                </Box>
+              </ListItem>
+            )}
+            <div ref={messagesEndRef} />
+          </List>
+        )}
       </Paper>
       <Box
         sx={{
