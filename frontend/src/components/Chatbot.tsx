@@ -13,11 +13,11 @@ import {
   List,
   ListItem,
   Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  SelectChangeEvent,
+  // FormControl,
+  // InputLabel,
+  // Select,
+  // MenuItem,
+  // SelectChangeEvent,
   Paper,
   Tooltip,
   Button,
@@ -110,9 +110,9 @@ const Chatbot: React.FC = () => {
     setInput(e.target.value);
   };
 
-  const handleSpeakerChange = (e: SelectChangeEvent<string>) => {
-    setSelectedSpeaker(e.target.value);
-  };
+  // const handleSpeakerChange = (e: SelectChangeEvent<string>) => {
+  //   setSelectedSpeaker(e.target.value);
+  // };
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -280,7 +280,7 @@ const Chatbot: React.FC = () => {
           <br />
           History
         </Button>
-        <FormControl sx={{ flex: 1 }}>
+        {/* <FormControl sx={{ flex: 1 }}>
           <InputLabel id="speaker-select-label">Filter by Speaker</InputLabel>
           <Select
             labelId="speaker-select-label"
@@ -295,7 +295,7 @@ const Chatbot: React.FC = () => {
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </FormControl> */}
         <Box sx={{ display: "flex", alignItems: "center", flex: 4 }}>
           <TextField
             fullWidth
