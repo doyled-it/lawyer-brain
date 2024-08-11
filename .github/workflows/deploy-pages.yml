@@ -19,26 +19,31 @@ jobs:
           node-version: "16"
 
       - name: Install dependencies
-        run: cd frontend && npm install
+        run: npm install
+        working-directory: ./frontend
 
       - name: Build the project
         run: |
           CI=false npm run build
+        working-directory: ./frontend
 
       - name: Copy CNAME file
         run: cp CNAME build/CNAME
+        working-directory: ./frontend
 
       - name: No Jekyll
         run: touch build/.nojekyll
+        working-directory: ./frontend
 
       - name: Configure Git
         run: |
           git config --global user.email "michaeldoyle1994@gmail.com"
           git config --global user.name "Michael Doyle"
+        working-directory: ./frontend
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+          publish_dir: ./frontend/build
           publish_branch: gh-pages
