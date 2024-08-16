@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "lawyer-brain"
 version = "0.1.0"
-description = "A RAG Brain of Good and Bad Lawyers, modified from Weaviate's Verba"
+description = "A RAG Brain of Good and Bad Lawyers (Bad lawyers WIP)"
 authors = ["Michael Doyle <michaeldoyle1994@gmail.com>"]
-license = "MIT"
+license = "GPL-3.0"
 readme = "README.md"
 homepage = "https://github.com/doyled-it/lawyer-brain"
 packages = [

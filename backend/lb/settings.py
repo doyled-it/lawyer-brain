@@ -37,6 +37,7 @@ class Settings(BaseSettings):
     def post_init(self):
         self.dir.mkdir(parents=True, exist_ok=True)
         if not self.chroma_docker:
+            self.chroma_path = Path(self.chroma_path)
             self.chroma_path.mkdir(parents=True, exist_ok=True)
         if self.environment == Environment.production:
             self.origin = self.prod_url
