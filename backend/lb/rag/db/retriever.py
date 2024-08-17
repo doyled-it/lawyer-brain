@@ -115,7 +115,9 @@ class FiveFourRetriever:
             filter = None
 
         # Get the most similar documents to the user_message
-        documents = self.db.similarity_search(query=user_message, k=self.k, filter=filter)
+        documents = self.db.max_marginal_relevance_search(
+            query=user_message, k=self.k, filter=filter
+        )
 
         # Get the context for each document
         doc_responses = []
